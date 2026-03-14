@@ -5,5 +5,5 @@
   "backup_from": ["c:\\tools\\", "c:\\temp"],
   "schedule_note": "Format (timespan): days.hours:minutes:seconds",
   "schedule": "3.00:00:00",
-  "maxbus": 3
+  "retainN": 3
 }

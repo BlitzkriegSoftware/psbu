@@ -24,6 +24,28 @@ function Get-RandomString {
     return $gs
 }
 
+function Invoke-DoRetention {
+    [CmdletBinding()]
+    param (
+        [string]$buFolder, 
+        [int]$retainN
+    )
+
+    $dirs = Get-ChildItem -Directory -Path $buFolder | Sort-Object CreationTime -Descending | Select-Object -Property Fullname;
+    if ($dirs.Count -le $retainN) {
+        return;
+    }
+    
+    for ($i = 1; $i -le $dirs.Length; $i++) {
+        if ($i -le $retainN) {
+            continue;
+        }
+        $tbp = $dirs[$i];
+        Remove-Item -Path $tbp -Recurse -Force
+    }
+
+}
+
 if ( $PSVersionTable.PSVersion.Major -lt 7) {
     Write-Error "Must be running PS7 or higher";
     return 1;
@@ -32,7 +54,11 @@ if ( $PSVersionTable.PSVersion.Major -lt 7) {
 $config = Join-Path -Path $PSScriptRoot -ChildPath psbu-config.json
 $jsonData = Get-Content -Path $config -Raw | ConvertFrom-Json
 
+[int]$retainN = $jsonData.retainN;
+
 $backup_to = $jsonData.backup_to;
+
+Invoke-DoRetention -buFolder $backup_to -retainN $retainN;
 
 if (-not (Test-Path -Path $backup_to -PathType Container)) {
     New-Item -Path $backup_to -ItemType Directory | Out-Null
