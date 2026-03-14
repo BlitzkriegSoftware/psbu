@@ -13,16 +13,16 @@ function Get-RandomString {
         $Count = 9
     )
 
+    $okChars = @(
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+        "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+    );
+
     $gs = -join ($okChars | Get-Random -Count $Count | ForEach-Object { $_ })
 
     return $gs
 }
-
-$okChars = @(
-    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
-    "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-);
 
 if ( $PSVersionTable.PSVersion.Major -lt 7) {
     Write-Error "Must be running PS7 or higher";
@@ -49,6 +49,7 @@ if ( $backup_from.Count -le 0) {
     return 3;   
 }
 
+[System.DateTime]$start_ts = Get-Date
 $dts = Get-Date -Format "yyyyMMdd_HHmmss";
 $bu_target_root = Join-Path -Path $backup_to -ChildPath $dts
 New-Item -Path $bu_target_root -ItemType Directory -Force | Out-Null
@@ -69,5 +70,10 @@ foreach ($bu_from_folder in $backup_from) {
     Write-Output "Backing up ${bu_from_folder} to ${bu_target_filename}"
     Compress-Archive -Path "${bu_from_folder}\*" -DestinationPath $bu_target_filename
 }
+
+[System.DateTime]$endDt = Get-Date
+[System.TimeSpan]$ts = $endDt - $start_ts
+$elpsd = $ts.ToString();
+Write-Output "Back competed in: ${elpsd}";
 
 return 0;
