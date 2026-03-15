@@ -32,7 +32,9 @@ try {
     $events = $raw_events | Where-Object { $_.TaskName -eq $taskName };
 }
 catch {
-    Write-Warning -Message "Failed to query $($env:computername) because $($_.Exception.Message)" *> $error_file 
+    $events = $null;
+    $errmsg = $_.Exception.Message;
+    Write-Warning -Message "Failed to query $($env:computername) because ${errmsg}" *> $error_file 
 }
 
 if ($events) {
@@ -43,5 +45,5 @@ else {
     Add-Content $log_file "No files found as of $Date `r" -Encoding UTF8
 }
 
-Stop-Transcript
+Stop-Transcript;
 return 0;
