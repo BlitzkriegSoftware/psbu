@@ -2,7 +2,7 @@
   "backup_to_note": "Path to root of backup folder",
   "backup_to": "d:\\psbu",
   "backup_from_note": "List of full paths to folders",
-  "backup_from": ["c:\\tools\\", "c:\\temp"],
+  "backup_from": ["c:\\temp\\", "c:\\temp", "c:\\temp"],
   "schedule_note": "Format (timespan): days.hours:minutes:seconds",
   "schedule": "3.00:00:00",
   "retainN": 3

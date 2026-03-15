@@ -40,8 +40,11 @@ function Invoke-DoRetention {
         if ($i -le $retainN) {
             continue;
         }
-        $tbp = $dirs[$i];
-        Remove-Item -Path $tbp -Recurse -Force
+        $tbp = $dirs[$i].FullName;
+        if (-not [string]::IsNullOrWhiteSpace($tbp)) {
+            Write-Output "Pruning: ${tbp}";
+            Remove-Item -Path $tbp -Recurse -Force
+        }
     }
 
 }
