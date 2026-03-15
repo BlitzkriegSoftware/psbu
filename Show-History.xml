@@ -1,0 +1,7 @@
+ <QueryList>
+  <Query Id="0" Path="Microsoft-Windows-TaskScheduler">
+   <Select Path="Microsoft-Windows-TaskScheduler/Operational">
+    *[EventData/Data[@Name='TaskName']='###TASKNAME###'] and *[System[TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]
+   </Select>
+  </Query>
+ </QueryList>

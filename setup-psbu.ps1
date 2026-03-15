@@ -54,7 +54,15 @@ $principal = New-ScheduledTaskPrincipal `
 # 4. (Optional) Define task settings
 $settings = New-ScheduledTaskSettingsSet -WakeToRun
 
-# 5. Register the scheduled task
+# 5. Delete if exist
+$task = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+if ($null -ne $task) {
+    # Unregister (delete) the task without confirmation
+    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+    Write-Host "Scheduled task '$taskName' has been deleted."
+}
+
+# 6. Register the scheduled task
 Register-ScheduledTask `
     -TaskName $taskName `
     -Action $action `
@@ -63,10 +71,10 @@ Register-ScheduledTask `
     -Settings $settings `
     -Description $taskDescription;
 
-# 6. List scheduled tasks
+# 7. List scheduled tasks
 Get-ScheduledTask | Where-Object { $_.Taskname -match $taskName }
 
-#7 Tell how to run manually
+# 8. Tell how to run manually
 Write-Output "To run immediately:"
 Write-Output "   Start-ScheduledTask -TaskName $taskName"
 

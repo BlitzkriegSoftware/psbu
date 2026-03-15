@@ -19,6 +19,14 @@
       "script": "${workspaceFolder}/setup-psbu.ps1",
       "cwd": "${workspaceFolder}",
       "args": []
+    },
+    {
+      "name": "History",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${workspaceFolder}/Show-History.ps1",
+      "cwd": "${workspaceFolder}",
+      "args": []
     }
   ]
 }
