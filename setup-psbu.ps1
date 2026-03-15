@@ -7,28 +7,43 @@ if ( $PSVersionTable.PSVersion.Major -lt 7) {
     return 1;
 }
 
+# Check if running as Administrator
+$isAdmin = ([Security.Principal.WindowsPrincipal] `
+        [Security.Principal.WindowsIdentity]::GetCurrent()
+).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator);
+
+if (-not $isAdmin) {
+    Write-Error "Must be running as administrator";
+    return 2;  
+}
+
+# minutes of random delay
+[int32]$randomDelay = 9;
+
 $taskName = "psbu-script";
 $taskDescription = 'PS-BU Backup';
 
 $config = Join-Path -Path $PSScriptRoot -ChildPath psbu-config.json
 $jsonData = Get-Content -Path $config -Raw | ConvertFrom-Json
 
-$schedule_text = $jsonData.schedule; 
-$schedule = [timespan]::Parse($schedule_text);
+$at = $jsonData.at;
+$everyNdays = $jsonData.everyNdays;
 
 $ps7 = "C:\Program Files\PowerShell\7\pwsh.exe"
 $script2run = Join-Path -Path $PSScriptRoot -ChildPath "invoke-psbu.ps1"
 
 # 1. Define the action to run powershell.exe with arguments for the script path
 $action = New-ScheduledTaskAction `
+    -WorkingDirectory $PSScriptRoot `
     -Execute $ps7 `
-    -Argument "" `
-    -NoProfile `
-    -ExecutionPolicy Bypass `
-    -File $script2run
+    -Argument " -ExecutionPolicy Bypass -File ${script2run}"
 
 # 2. Define the daily trigger to run at 
-$trigger = New-ScheduledTaskTrigger RepetitionDuration $schedule
+$trigger = New-ScheduledTaskTrigger `
+    -Daily `
+    -DaysInterval $everyNdays `
+    -At $at `
+    -RandomDelay (New-TimeSpan -Minutes  $randomDelay)
 
 # 3. Define the principal (user context)
 $principal = New-ScheduledTaskPrincipal `

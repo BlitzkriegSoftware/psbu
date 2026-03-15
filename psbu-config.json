@@ -4,6 +4,7 @@
   "backup_from_note": "List of full paths to folders",
   "backup_from": ["c:\\temp\\", "c:\\temp", "c:\\temp"],
   "schedule_note": "Format (timespan): days.hours:minutes:seconds",
-  "schedule": "3.00:00:00",
+  "everyNdays": 3,
+  "at": "9:00 pm",
   "retainN": 3
 }
