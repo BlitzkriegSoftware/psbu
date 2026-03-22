@@ -21,6 +21,7 @@ if (-not $isAdmin) {
 [int32]$randomDelay = 9;
 
 $taskName = "psbu-script";
+$taskPath = "\blitzkrieg\"
 $taskDescription = 'PS-BU Backup';
 
 $config = Join-Path -Path $PSScriptRoot -ChildPath psbu-config.json
@@ -65,6 +66,7 @@ if ($null -ne $task) {
 # 6. Register the scheduled task
 Register-ScheduledTask `
     -TaskName $taskName `
+    -TaskPath $taskPath `
     -Action $action `
     -Trigger $trigger `
     -Principal $principal `

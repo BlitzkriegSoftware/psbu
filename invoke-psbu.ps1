@@ -96,8 +96,15 @@ foreach ($bu_from_folder in $backup_from) {
     $bu_target_filename = Join-Path -Path $bu_target_root -ChildPath $buFile 
 
     # Backup
-    Write-Output "Backing up ${bu_from_folder} to ${bu_target_filename}"
-    Compress-Archive -Path "${bu_from_folder}\*" -DestinationPath $bu_target_filename
+    try {
+        Write-Output "Backing up ${bu_from_folder} to ${bu_target_filename}"
+        Compress-Archive -Path "${bu_from_folder}\*" -DestinationPath $bu_target_filename
+    }
+    catch {
+        $errmsg = $_.Exception.Message;
+        Write-Warning -Message "Backup Failed: Backing up ${bu_from_folder} --> ${bu_target_filename} because ${errmsg}"
+        return 99
+    }
 }
 
 [System.DateTime]$endDt = Get-Date
