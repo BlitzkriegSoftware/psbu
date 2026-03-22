@@ -78,6 +78,6 @@ Get-ScheduledTask | Where-Object { $_.Taskname -match $taskName }
 
 # 8. Tell how to run manually
 Write-Output "To run immediately:"
-Write-Output "   Start-ScheduledTask -TaskName $taskName"
+Write-Output "   Start-ScheduledTask -TaskName $taskName -TaskPath $taskPath"
 
 return 0;
